@@ -6,56 +6,53 @@ open System.Collections.Generic
 type _a(key : string, ?value : string) =
     member _.value =
         match value with
-        | Some v -> KeyValueAttr (key, v)
-        | None -> NonValueAttr key
+        | Some v -> Attr.create key v
+        | None -> Attr.createBool key
 
 type attr([<ParamArray>]attrs : _a array) =
     static member empty = attr()
     member internal _.attributes = attrs |> Seq.map _.value
 
-let private selfClosingTags : HashSet<string> = HashSet<string>(seq { "base";"link";"meta";"hr";"br";"wbr";"img";"track";"embed";"source";"col";"input" })
+let private selfClosingTags : HashSet<string> =
+    HashSet<string>(seq { "base";"link";"meta";"hr";"br";"wbr";"img";"track";"embed";"source";"col";"input" })
 
 [<AbstractClass>]
-type x =
+type HtmlNode =
     val value: XmlNode
     new (node) = { value = node }
 
 type text =
-    inherit x
-    new (str : string) = { inherit x(TextNode str) }
+    inherit HtmlNode
+    new (str : string) = { inherit HtmlNode(TextNode str) }
 
 type elem =
-    inherit x
-    new (tag : string, attrs : attr, [<ParamArray>] children : x array) =
+    inherit HtmlNode
+    new (tag : string, attrs : attr, [<ParamArray>] children : HtmlNode array) =
         let a = attrs.attributes |> List.ofSeq
         let c = children |> Seq.map _.value |> List.ofSeq
         let node =
             match selfClosingTags.Contains tag with
-            | false -> ParentNode ((tag, a), c)
-            | true -> SelfClosingNode (tag, a)
-        { inherit x(node) }
+            | false -> Elem.create tag a c
+            | true -> Elem.createSelfClosing tag a
+        { inherit HtmlNode(node) }
     new (tag : string) = elem(tag, attr.empty, Array.empty)
     new (tag : string, [<ParamArray>] attrs : _a array) = elem(tag, attr(attrs), Array.empty)
-    new (tag : string, [<ParamArray>] c : x array) = elem(tag, attr.empty, c)
+    new (tag : string, [<ParamArray>] c : HtmlNode array) = elem(tag, attr.empty, c)
 
 [<AutoOpen>]
-module Elem =
-    [<AbstractClass>]
-    type selfClosing(tag : string, attrs) =
-        inherit elem(tag, attr(attrs), Array.empty)
-
-    type base'([<ParamArray>]attrs : _a array) = inherit selfClosing("base", attrs)
-    type link([<ParamArray>]attrs : _a array) = inherit selfClosing("link", attrs)
-    type meta([<ParamArray>]attrs : _a array) = inherit selfClosing("meta", attrs)
-    type hr([<ParamArray>]attrs : _a array) = inherit selfClosing("hr", attrs)
-    type br([<ParamArray>]attrs : _a array) = inherit selfClosing("br", attrs)
-    type wbr([<ParamArray>]attrs : _a array) = inherit selfClosing("wbr", attrs)
-    type img([<ParamArray>]attrs : _a array) = inherit selfClosing("img", attrs)
-    type track([<ParamArray>]attrs : _a array) = inherit selfClosing("track", attrs)
-    type embed([<ParamArray>]attrs : _a array) = inherit selfClosing("embed", attrs)
-    type source([<ParamArray>]attrs : _a array) = inherit selfClosing("source", attrs)
-    type col([<ParamArray>]attrs : _a array) = inherit selfClosing("col", attrs)
-    type input([<ParamArray>]attrs : _a array) = inherit selfClosing("input", attrs)
+module HtmlElem =
+    type base'([<ParamArray>]attrs : _a array) = inherit elem("base", attr(attrs), Array.empty)
+    type link([<ParamArray>]attrs : _a array) = inherit elem("link", attr(attrs), Array.empty)
+    type meta([<ParamArray>]attrs : _a array) = inherit elem("meta", attr(attrs), Array.empty)
+    type hr([<ParamArray>]attrs : _a array) = inherit elem("hr", attr(attrs), Array.empty)
+    type br([<ParamArray>]attrs : _a array) = inherit elem("br", attr(attrs), Array.empty)
+    type wbr([<ParamArray>]attrs : _a array) = inherit elem("wbr", attr(attrs), Array.empty)
+    type img([<ParamArray>]attrs : _a array) = inherit elem("img", attr(attrs), Array.empty)
+    type track([<ParamArray>]attrs : _a array) = inherit elem("track", attr(attrs), Array.empty)
+    type embed([<ParamArray>]attrs : _a array) = inherit elem("embed", attr(attrs), Array.empty)
+    type source([<ParamArray>]attrs : _a array) = inherit elem("source", attr(attrs), Array.empty)
+    type col([<ParamArray>]attrs : _a array) = inherit elem("col", attr(attrs), Array.empty)
+    type input([<ParamArray>]attrs : _a array) = inherit elem("input", attr(attrs), Array.empty)
 
     type html =
         inherit elem
@@ -564,7 +561,7 @@ module Elem =
 
 
 [<AutoOpen>]
-module Attr =
+module HtmlAttr =
     let _async = _a("async")
     let _autofocus = _a("autofocus")
     let _autoplay = _a("autoplay")

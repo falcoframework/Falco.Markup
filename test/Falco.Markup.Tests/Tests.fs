@@ -2,6 +2,7 @@
 
 open System
 open Falco.Markup
+open Falco.Markup.Html
 open Falco.Markup.Svg
 open FsUnit.Xunit
 open Xunit
@@ -351,4 +352,46 @@ module TestHelpersTests =
         let nameValues = renderNameValues xml
 
         nameValues
+        |> should equal "first_name=first_name_value&long_text=long_text_value&radio=value1&checkbox=value1&checkbox=value2&select=option2&multiselect=option2&multiselect=option3"
+
+    [<Fact>]
+    let ``Kitchen sink 2`` () =
+        form(
+            input(_name "first_name", _value "first_name_value"),
+            textarea(attr(_name "long_text"), text "long_text_value"),
+            div([| for i in [0..10] do  input(_type "radio", _name "radio", _value "value1" ) |])
+        )
+        //  [] [
+        //     Elem.input [ Attr.name "first_name"; Attr.value "first_name_value" ]
+
+        //     Elem.textarea [ Attr.name "long_text" ] [ Text.raw "long_text_value" ]
+
+        //     Elem.div [] [
+        //         Elem.input [ Attr.type' "radio"; Attr.name "radio"; Attr.value "value1"; Attr.checked' ]
+        //         Elem.input [ Attr.type' "radio"; Attr.name "radio"; Attr.value "value2" ]
+        //         Elem.input [ Attr.type' "radio"; Attr.name "radio"; Attr.value "value3" ]
+        //     ]
+
+        //     Elem.div [] [
+        //         Elem.input [ Attr.type' "checkbox"; Attr.name "checkbox"; Attr.value "value1"; Attr.checked' ]
+        //         Elem.input [ Attr.type' "checkbox"; Attr.name "checkbox"; Attr.value "value2"; Attr.checked' ]
+        //         Elem.input [ Attr.type' "checkbox"; Attr.name "checkbox"; Attr.value "value3" ]
+        //     ]
+
+        //     Elem.select [ Attr.name "select" ] [
+        //         Elem.option [ Attr.value "option1" ] [ Text.raw "Option 1" ]
+        //         Elem.option [ Attr.value "option2"; Attr.selected ] [ Text.raw "Option 2" ]
+        //         Elem.option [ Attr.value "option3" ] [ Text.raw "Option 3" ]
+        //     ]
+
+        //     Elem.select [ Attr.name "multiselect"; Attr.multiple ] [
+        //         Elem.option [ Attr.value "option1" ] [ Text.raw "Option 1" ]
+        //         Elem.option [ Attr.value "option2"; Attr.selected ] [ Text.raw "Option 2" ]
+        //         Elem.option [ Attr.value "option3"; Attr.selected ] [ Text.raw "Option 3" ]
+        //     ]
+
+        //     Elem.input [ Attr.type' "submit" ]
+        // ]
+
+        |> renderNameValues
         |> should equal "first_name=first_name_value&long_text=long_text_value&radio=value1&checkbox=value1&checkbox=value2&select=option2&multiselect=option2&multiselect=option3"
