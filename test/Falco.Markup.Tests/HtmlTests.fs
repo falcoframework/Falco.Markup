@@ -121,6 +121,44 @@ let ``Elements`` () =
     _svg [] [] |> should equal <| Elem.svg [] []
 
 [<Fact>]
+let ``Text`` () =
+    h1_ "falco" |> should equal <| Text.h1 "falco"
+    h2_ "falco" |> should equal <| Text.h2 "falco"
+    h3_ "falco" |> should equal <| Text.h3 "falco"
+    h4_ "falco" |> should equal <| Text.h4 "falco"
+    h5_ "falco" |> should equal <| Text.h5 "falco"
+    h6_ "falco" |> should equal <| Text.h6 "falco"
+    p_ "falco" |> should equal <| Text.p "falco"
+    dd_ "falco" |> should equal <| Text.dd "falco"
+    dt_ "falco" |> should equal <| Text.dt "falco"
+    abbr_ "falco" |> should equal <| Text.abbr "falco"
+    b_ "falco" |> should equal <| Text.b "falco"
+    bdi_ "falco" |> should equal <| Text.bdi "falco"
+    bdo_ "falco" |> should equal <| Text.bdo "falco"
+    cite_ "falco" |> should equal <| Text.cite "falco"
+    code_ "falco" |> should equal <| Text.code "falco"
+    data_ "falco" |> should equal <| Text.data "falco"
+    dfn_ "falco" |> should equal <| Text.dfn "falco"
+    em_ "falco" |> should equal <| Text.em "falco"
+    i_ "falco" |> should equal <| Text.i "falco"
+    kbd_ "falco" |> should equal <| Text.kbd "falco"
+    mark_ "falco" |> should equal <| Text.mark "falco"
+    q_ "falco" |> should equal <| Text.q "falco"
+    rp_ "falco" |> should equal <| Text.rp "falco"
+    rt_ "falco" |> should equal <| Text.rt "falco"
+    ruby_ "falco" |> should equal <| Text.ruby "falco"
+    s_ "falco" |> should equal <| Text.s "falco"
+    samp_ "falco" |> should equal <| Text.samp "falco"
+    small_ "falco" |> should equal <| Text.small "falco"
+    span_ "falco" |> should equal <| Text.span "falco"
+    strong_ "falco" |> should equal <| Text.strong "falco"
+    sub_ "falco" |> should equal <| Text.sub "falco"
+    sup_ "falco" |> should equal <| Text.sup "falco"
+    time_ "falco" |> should equal <| Text.time "falco"
+    u_ "falco" |> should equal <| Text.u "falco"
+    var_ "falco" |> should equal <| Text.var "falco"
+
+[<Fact>]
 let ``Attributes`` () =
     _div [ __accept "falco" ] [] |> should equal <| _div [ Attr.accept "falco" ] []
     _div [ __acceptCharset "falco" ] [] |> should equal <| _div [ Attr.acceptCharset "falco" ] []
