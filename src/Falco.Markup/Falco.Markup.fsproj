@@ -46,8 +46,8 @@
     <Compile Include="Text.fs" />
     <Compile Include="Elem.fs" />
     <Compile Include="Attr.fs" />
-    <Compile Include="Svg.fs" />
     <Compile Include="Html.fs" />
+    <Compile Include="Svg.fs" />
     <Compile Include="Templates.fs" />
     <Compile Include="TestHelpers.fs" />
   </ItemGroup>
