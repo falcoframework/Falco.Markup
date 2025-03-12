@@ -113,7 +113,7 @@ module internal XmlNodeSerializer =
 
 [<AutoOpen>]
 module XmlNodeRenderer =
-    /// Render XmlNode recursively to string representation
+    /// Render XmlNode as string
     let renderNode (tag : XmlNode) =
         let sb = StringBuilderCache.Acquire()
         let w = new StringWriter(sb, CultureInfo.InvariantCulture)

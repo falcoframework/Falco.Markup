@@ -10,20 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        dotnet-version: ['6.0.x']
+        dotnet-version: ['8.0.x']
     steps:
       - uses: actions/checkout@v2
 
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
-        uses: actions/setup-dotnet@v1.7.2
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
 
       - name: Install dependencies
-        run: dotnet restore --force --force-evaluate
+        run: dotnet restore src/Falco.Markup
 
       - name: Build
-        run: dotnet build -c Release --no-restore
+        run: dotnet build src/Falco.Markup -c Release
 
       - name: Test
-        run: dotnet test -c Release --no-build
+        run: dotnet test test/Falco.Markup.Tests -c Release

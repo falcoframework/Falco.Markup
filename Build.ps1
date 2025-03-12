@@ -8,7 +8,9 @@ param (
     [ValidateSet("Debug", "Release")]
     [string] $Configuration = "Debug",
 
-    [switch] $SkipClean
+    [switch] $NoRestore,
+
+    [switch] $Clean
 )
 
 function RunCommand {
@@ -20,21 +22,23 @@ function RunCommand {
 $rootDir = $PSScriptRoot
 $srcDir = Join-Path -Path $rootDir -ChildPath 'src'
 $testDir = Join-Path -Path $rootDir -ChildPath 'test'
-$projectDir = Join-Path -Path $srcDir -ChildPath 'Falco.Markup'
 
-if ($Action -eq "Test")
-{
-    $projectdir = Join-Path -Path $testDir -ChildPath 'Falco.Markup.Tests'
+switch ($Action) {
+    "Test"            { $projectdir = Join-Path -Path $testDir -ChildPath 'Falco.Tests' }
+    "Pack"            { $projectDir = Join-Path -Path $srcDir -ChildPath 'Falco' }
+    Default           { $projectDir = Join-Path -Path $srcDir -ChildPath 'Falco' }
 }
 
-if (!$SkipClean)
-{
+if(!$NoRestore.IsPresent) {
     RunCommand "dotnet restore $projectDir --force --force-evaluate --nologo --verbosity quiet"
+}
+
+if ($Clean) {
     RunCommand "dotnet clean $projectDir -c $Configuration --nologo --verbosity quiet"
 }
 
 switch ($Action) {
-    "Test"  { RunCommand "dotnet test `"$projectDir`"" }
-    "Pack"  { RunCommand "dotnet pack `"$projectDir`" -c $Configuration --include-symbols --include-source" }
-    Default { RunCommand "dotnet build `"$projectDir`" -c $Configuration" }
+    "Test"            { RunCommand "dotnet test `"$projectDir`"" }
+    "Pack"            { RunCommand "dotnet pack `"$projectDir`" -c $Configuration --include-symbols --include-source" }
+    Default           { RunCommand "dotnet build `"$projectDir`" -c $Configuration" }
 }

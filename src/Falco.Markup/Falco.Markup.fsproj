@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>Falco.Markup</AssemblyName>
     <RootNamespace>Falco</RootNamespace>
-    <Version>1.0.2</Version>
+    <Version>1.1.1</Version>
 
     <!-- General info -->
     <Description>An F# DSL for generating markup, including HTML, SVG and XML.</Description>
@@ -43,9 +43,9 @@
 
   <ItemGroup>
     <Compile Include="XmlNode.fs" />
-    <Compile Include="Text.fs" />
-    <Compile Include="Elem.fs" />
     <Compile Include="Attr.fs" />
+    <Compile Include="Elem.fs" />
+    <Compile Include="Text.fs" />
     <Compile Include="Html.fs" />
     <Compile Include="Svg.fs" />
     <Compile Include="Templates.fs" />
