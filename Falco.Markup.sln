@@ -11,26 +11,63 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{25A4B987-E
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Falco.Markup.Tests", "test\Falco.Markup.Tests\Falco.Markup.Tests.fsproj", "{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{5D20AA90-6969-D8BD-9DCD-8634F4692FDA}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "StaticWebsite", "samples\StaticWebsite\StaticWebsite.fsproj", "{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Debug|x64.Build.0 = Debug|Any CPU
+		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Debug|x86.Build.0 = Debug|Any CPU
 		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Release|x64.ActiveCfg = Release|Any CPU
+		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Release|x64.Build.0 = Release|Any CPU
+		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Release|x86.ActiveCfg = Release|Any CPU
+		{06D04004-6DB3-4522-8EFA-E5239219EF0D}.Release|x86.Build.0 = Release|Any CPU
 		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Debug|x64.Build.0 = Debug|Any CPU
+		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Debug|x86.Build.0 = Debug|Any CPU
 		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Release|x64.ActiveCfg = Release|Any CPU
+		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Release|x64.Build.0 = Release|Any CPU
+		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Release|x86.ActiveCfg = Release|Any CPU
+		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA}.Release|x86.Build.0 = Release|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Debug|x64.Build.0 = Debug|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Debug|x86.Build.0 = Debug|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Release|x64.ActiveCfg = Release|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Release|x64.Build.0 = Release|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Release|x86.ActiveCfg = Release|Any CPU
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{06D04004-6DB3-4522-8EFA-E5239219EF0D} = {795C5C1E-4386-49BE-8B93-CB0722AC6220}
 		{A6AADC18-B737-4CB4-8B35-857E9F94C5CA} = {25A4B987-EB43-4351-A7CD-C5451613B590}
+		{2C6417E9-ACAE-4B44-A4FA-31D53720F09D} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 	EndGlobalSection
 EndGlobal
