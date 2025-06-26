@@ -18,7 +18,7 @@ module Attr =
             "class", " "
             "style", "; "
             "accept", ", " ]
-            
+
     /// Merge two XmlAttribute lists
     let merge (attrs1 : XmlAttribute list) (attrs2 : XmlAttribute list) =
 
@@ -446,7 +446,7 @@ module Attr =
 
     /// Alias for `enctype=multipart/form-data`
     let enctypeMultipart = enctype "multipart/form-data"
-    
+
     // Alias for `method=post`
     let methodPost = method "post"
 
@@ -470,7 +470,7 @@ module Attr =
 
     /// Alias for `target=_unfencedTop`
     let targetUnfencedTop = target "_unfencedTop"
-    
+
     /// Alias for `type=button`
     let typeButton = type' "button"
 
@@ -545,7 +545,7 @@ module Attr =
         value (x.ToString())
 
     /// Alias for `value={str}` by invoking `_.ToString(format)` on input
-    let inline valueStringf format (x : ^T when ^T : (member ToString : string -> string)) = 
+    let inline valueStringf format (x : ^T when ^T : (member ToString : string -> string)) =
         value (x.ToString(format))
 
     /// Alias for `Attr.valueStringf "yyyy-MM-dd" dt`
@@ -553,27 +553,27 @@ module Attr =
         valueStringf "yyyy-MM-dd" dt
 
     /// Alias for `Attr.valueStringf "s" dt`
-    let valueDatetimeLocal (dt : DateTime) = 
-        valueStringf "s" dt 
+    let valueDatetimeLocal (dt : DateTime) =
+        valueStringf "s" dt
 
     /// Alias for `Attr.valueStringf "yyyy-MM"`
     let valueMonth (dt : DateTime) =
         valueStringf "yyyy-MM" dt
 
-    /// Alias for `Attr.valueStringf "hh\:mm" time` 
-    let valueTime (time : TimeSpan) = 
+    /// Alias for `Attr.valueStringf "hh\:mm" time`
+    let valueTime (time : TimeSpan) =
         valueStringf "hh\:mm" time
-       
-    let private cal = System.Globalization.GregorianCalendar(GregorianCalendarTypes.USEnglish)
+
+    let private cal = GregorianCalendar(GregorianCalendarTypes.USEnglish)
 
     /// Alias for `value={yyyy-W#}` (ex: `value=1986-W50`)
-    let valueWeek (dt : DateTime) = 
+    let valueWeek (dt : DateTime) =
         let wk = cal.GetWeekOfYear(dt, CalendarWeekRule.FirstDay, DayOfWeek.Monday).ToString("00")
         let yr = dt.ToString("yyyy")
         value (sprintf "%s-W%s" yr wk)
-    
+
     /// Invoke `fn` if `Some` otherwise return `value=""`
-    let valueOption fn opt = 
+    let valueOption fn opt =
         match opt with Some x -> fn x | None -> valueEmpty
 
     //

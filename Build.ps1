@@ -9,7 +9,7 @@ param (
     [string] $Configuration = "Debug",
 
     [switch] $NoRestore,
-    
+
     [switch] $Clean
 )
 
@@ -24,24 +24,21 @@ $srcDir = Join-Path -Path $rootDir -ChildPath 'src'
 $testDir = Join-Path -Path $rootDir -ChildPath 'test'
 
 switch ($Action) {
-    "Test"        { $projectdir = Join-Path -Path $testDir -ChildPath 'Falco.Markup.Tests' }
-    "Pack"        { $projectDir = Join-Path -Path $srcDir -ChildPath 'Falco.Markup' }
-    "BuildSite"   { $projectDir = Join-Path -Path $rootDir -ChildPath 'site' }
-    "DevelopSite" { $projectDir = Join-Path -Path $rootDir -ChildPath 'site' }
-    Default       { $projectDir = Join-Path -Path $srcDir -ChildPath 'Falco.Markup' }
+    "Test"            { $projectdir = Join-Path -Path $testDir -ChildPath 'Falco.Tests' }
+    "Pack"            { $projectDir = Join-Path -Path $srcDir -ChildPath 'Falco' }
+    Default           { $projectDir = Join-Path -Path $srcDir -ChildPath 'Falco' }
 }
 
 if(!$NoRestore.IsPresent) {
     RunCommand "dotnet restore $projectDir --force --force-evaluate --nologo --verbosity quiet"
 }
 
-if ($Clean)
-{
+if ($Clean) {
     RunCommand "dotnet clean $projectDir -c $Configuration --nologo --verbosity quiet"
 }
 
 switch ($Action) {
-    "Test"        { RunCommand "dotnet test `"$projectDir`"" }
-    "Pack"        { RunCommand "dotnet pack `"$projectDir`" -c $Configuration --include-symbols --include-source" }
-    Default       { RunCommand "dotnet build `"$projectDir`" -c $Configuration" }
+    "Test"            { RunCommand "dotnet test `"$projectDir`"" }
+    "Pack"            { RunCommand "dotnet pack `"$projectDir`" -c $Configuration --include-symbols --include-source" }
+    Default           { RunCommand "dotnet build `"$projectDir`" -c $Configuration" }
 }

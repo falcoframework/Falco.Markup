@@ -25,6 +25,7 @@
     <Compile Include="AttrTests.fs" />
     <Compile Include="ElemTests.fs" />
     <Compile Include="TextTests.fs" />
+    <Compile Include="HtmlTests.fs" />
     <Compile Include="SvgTests.fs" />
     <Compile Include="TestHelperTests.fs" />
     <Compile Include="Program.fs" />
