@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] 2025-06-26
+
+### Added
+
+- Introduced a prefix-based HTML DSL for `Falco.Markup` to reduce visual noise and improve readability.
+    - Single underscore (`_`) prefix for HTML elements (e.g., `_div`, `_span`).
+    - Single underscore (`_`) prefix for attributes (e.g., `_class_`, `_id_`).
+    - Single underscore (`_`) prefix for text elements with a trailing apostrophe (e.g., `_h1'`, `_p'`).
+    - Example usage:
+      ```fsharp
+      let myComponent =
+          _div [ _class_ "container" ] [
+              _h1' "Hello World"
+              _p' "This is a paragraph"
+          ]
+      ```
+- Unified DSL module ensures backward compatibility while providing a cleaner syntax for new code.
+
+
 ## [1.1.1] 2024-03-28
 
 ###
