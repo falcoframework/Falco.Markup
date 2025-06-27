@@ -24,9 +24,9 @@ $srcDir = Join-Path -Path $rootDir -ChildPath 'src'
 $testDir = Join-Path -Path $rootDir -ChildPath 'test'
 
 switch ($Action) {
-    "Test"            { $projectdir = Join-Path -Path $testDir -ChildPath 'Falco.Tests' }
-    "Pack"            { $projectDir = Join-Path -Path $srcDir -ChildPath 'Falco' }
-    Default           { $projectDir = Join-Path -Path $srcDir -ChildPath 'Falco' }
+    "Test"            { $projectdir = Join-Path -Path $testDir -ChildPath 'Falco.Markup.Tests' }
+    "Pack"            { $projectDir = Join-Path -Path $srcDir -ChildPath 'Falco.Markup' }
+    Default           { $projectDir = Join-Path -Path $srcDir -ChildPath 'Falco.Markup' }
 }
 
 if(!$NoRestore.IsPresent) {
