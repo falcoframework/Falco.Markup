@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>Falco.Markup</AssemblyName>
     <RootNamespace>Falco</RootNamespace>
-    <Version>1.2.0</Version>
+    <Version>1.3.0</Version>
 
     <!-- General info -->
     <Description>An F# DSL for generating markup, including HTML, SVG and XML.</Description>

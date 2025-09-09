@@ -11,43 +11,59 @@ let ``Self-closing tag should render with trailing slash`` () =
 
 [<Fact>]
 let ``Self-closing tag with attrs should render with trailing slash`` () =
-    let t = Elem.createSelfClosing "hr" [ Attr.class' "my-class" ]
+    let t = Elem.createSelfClosing "hr" [ _class_ "my-class" ]
     renderNode t |> should equal "<hr class=\"my-class\" />"
 
 [<Fact>]
 let ``Standard tag should render with multiple attributes`` () =
-    let t = Elem.create "div" [ Attr.create "class" "my-class"; Attr.autofocus; Attr.create "data-bind" "slider" ] []
+    let t = Elem.create "div" [ Attr.create "class" "my-class"; _autofocus_; Attr.create "data-bind" "slider" ] []
     renderNode t |> should equal "<div class=\"my-class\" autofocus data-bind=\"slider\"></div>"
+
+
+[<Fact>]
+let ``Can render NodeList with items``() =
+    Elem.createFragment [
+        for i = 1 to 3 do
+            yield _div [] [ _textf "%i" i ]
+    ]
+    |> renderNode
+    |> should equal "<div>1</div><div>2</div><div>3</div>"
+
+[<Fact>]
+let ``Can render empty NodeList``() =
+    Elem.empty
+    |> renderNode
+    |> should equal ""
 
 [<Fact>]
 let ``Script should contain src, lang and async`` () =
-    let t = Elem.script [ Attr.src "http://example.org/example.js";  Attr.lang "javascript"; Attr.async ] []
+    let t = _script [ _src_ "http://example.org/example.js";  _lang_ "javascript"; _async_ ] []
     renderNode t |> should equal "<script src=\"http://example.org/example.js\" lang=\"javascript\" async></script>"
 
 [<Fact>]
 let ``Should produce valid html doc`` () =
     let doc =
-        Elem.html [] [
-            Elem.body [] [
-                Elem.div [ Attr.class' "my-class" ] [
-                    Elem.h1 [] [ Text.raw "hello" ] ] ] ]
+        _html [] [
+            _body [] [
+                _div [ _class_ "my-class" ] [
+                    _h1 [] [ _text "hello" ] ] ] ]
     renderHtml doc |> should equal "<!DOCTYPE html><html><body><div class=\"my-class\"><h1>hello</h1></div></body></html>"
 
 [<Fact>]
-let ``Elem.control should render label with nested input`` () =
+let ``_control should render label with nested input`` () =
     let name = "email_address"
     let label = "Email Address"
-    let expected = Elem.label [ Attr.for' name ] [
-        Elem.span [ Attr.class' "form-label" ] [ Text.raw label ]
-        Elem.input [ Attr.id name; Attr.name name; Attr.typeEmail; Attr.required ] ]
+    let expected = _label [ _for_ name ] [
+        _span [ _class_ "form-label" ] [ _text label ]
+        _input [ _id_ name; _name_ name; _typeEmail_; _required_ ] ]
 
-    Elem.control name [ Attr.typeEmail; Attr.required  ] [
-        Elem.span [ Attr.class' "form-label" ] [ Text.raw label ] ]
+    _control name [ _typeEmail_; _required_  ] [
+        _span [ _class_ "form-label" ] [ _text label ] ]
     |> should equal expected
 
 [<Fact>]
 let ``Should create valid html button`` () =
-    let doc = Elem.button [ Attr.onclick "console.log(\"test\")"] [ Text.raw "click me" ]
+    let doc = _button [ _onclick_ "console.log(\"test\")"] [ _text "click me" ]
     renderNode doc |> should equal "<button onclick=\"console.log(\"test\")\">click me</button>";
 
 [<Fact>]
@@ -55,7 +71,7 @@ let ``Should produce valid xml doc`` () =
     let doc =
         Elem.create "books" [] [
             Elem.create "book" [] [
-                Elem.create "name" [] [ Text.raw "To Kill A Mockingbird" ]
+                Elem.create "name" [] [ _text "To Kill A Mockingbird" ]
             ]
         ]
 
@@ -75,20 +91,20 @@ let ``Should produce valid html doc for large result`` () =
         |> List.map (fun i -> { Name = sprintf "Name %i" i; Price = i |> float; Description = lorem})
 
     let elem product =
-        Elem.li [] [
-            Elem.h2 [] [ Text.raw product.Name ]
-            Text.rawf "Only %f" product.Price
-            Text.raw product.Description ]
+        _li [] [
+            _h2 [] [ _text product.Name ]
+            _textf "Only %f" product.Price
+            _text product.Description ]
 
     let productElems =
         products
         |> List.map elem
-        |> Elem.ul [ Attr.id "products" ]
+        |> _ul [ _id_ "products" ]
 
     let doc =
-        Elem.html [] [
-            Elem.body [] [
-                Elem.div [ Attr.class' "my-class" ] [ productElems ] ] ]
+        _html [] [
+            _body [] [
+                _div [ _class_ "my-class" ] [ productElems ] ] ]
 
     let render = renderHtml doc
     render |> fun s -> s.Substring(0, 27) |> should equal "<!DOCTYPE html><html><body>"
@@ -96,116 +112,116 @@ let ``Should produce valid html doc for large result`` () =
 
 [<Fact>]
 let ``HTML Spec`` () =
-    Elem.html [] [] |> renderNode |> should equal "<html></html>"
-    Elem.base' [] |> renderNode |> should equal "<base />"
-    Elem.head [] [] |> renderNode |> should equal "<head></head>"
-    Elem.link [] |> renderNode |> should equal "<link />"
-    Elem.meta [] |> renderNode |> should equal "<meta />"
-    Elem.style [] [] |> renderNode |> should equal "<style></style>"
-    Elem.title [] [] |> renderNode |> should equal "<title></title>"
-    Elem.body [] [] |> renderNode |> should equal "<body></body>"
-    Elem.address [] [] |> renderNode |> should equal "<address></address>"
-    Elem.article [] [] |> renderNode |> should equal "<article></article>"
-    Elem.aside [] [] |> renderNode |> should equal "<aside></aside>"
-    Elem.footer [] [] |> renderNode |> should equal "<footer></footer>"
-    Elem.header [] [] |> renderNode |> should equal "<header></header>"
-    Elem.h1 [] [] |> renderNode |> should equal "<h1></h1>"
-    Elem.h2 [] [] |> renderNode |> should equal "<h2></h2>"
-    Elem.h3 [] [] |> renderNode |> should equal "<h3></h3>"
-    Elem.h4 [] [] |> renderNode |> should equal "<h4></h4>"
-    Elem.h5 [] [] |> renderNode |> should equal "<h5></h5>"
-    Elem.h6 [] [] |> renderNode |> should equal "<h6></h6>"
-    Elem.main [] [] |> renderNode |> should equal "<main></main>"
-    Elem.nav [] [] |> renderNode |> should equal "<nav></nav>"
-    Elem.section [] [] |> renderNode |> should equal "<section></section>"
-    Elem.blockquote [] [] |> renderNode |> should equal "<blockquote></blockquote>"
-    Elem.dd [] [] |> renderNode |> should equal "<dd></dd>"
-    Elem.div [] [] |> renderNode |> should equal "<div></div>"
-    Elem.dl [] [] |> renderNode |> should equal "<dl></dl>"
-    Elem.dt [] [] |> renderNode |> should equal "<dt></dt>"
-    Elem.figcaption [] [] |> renderNode |> should equal "<figcaption></figcaption>"
-    Elem.figure [] [] |> renderNode |> should equal "<figure></figure>"
-    Elem.hr [] |> renderNode |> should equal "<hr />"
-    Elem.li [] [] |> renderNode |> should equal "<li></li>"
-    Elem.menu [] [] |> renderNode |> should equal "<menu></menu>"
-    Elem.ol [] [] |> renderNode |> should equal "<ol></ol>"
-    Elem.p [] [] |> renderNode |> should equal "<p></p>"
-    Elem.pre [] [] |> renderNode |> should equal "<pre></pre>"
-    Elem.ul [] [] |> renderNode |> should equal "<ul></ul>"
-    Elem.a [] [] |> renderNode |> should equal "<a></a>"
-    Elem.abbr [] [] |> renderNode |> should equal "<abbr></abbr>"
-    Elem.b [] [] |> renderNode |> should equal "<b></b>"
-    Elem.bdi [] [] |> renderNode |> should equal "<bdi></bdi>"
-    Elem.bdo [] [] |> renderNode |> should equal "<bdo></bdo>"
-    Elem.br [] |> renderNode |> should equal "<br />"
-    Elem.cite [] [] |> renderNode |> should equal "<cite></cite>"
-    Elem.code [] [] |> renderNode |> should equal "<code></code>"
-    Elem.data [] [] |> renderNode |> should equal "<data></data>"
-    Elem.dfn [] [] |> renderNode |> should equal "<dfn></dfn>"
-    Elem.em [] [] |> renderNode |> should equal "<em></em>"
-    Elem.i [] [] |> renderNode |> should equal "<i></i>"
-    Elem.kbd [] [] |> renderNode |> should equal "<kbd></kbd>"
-    Elem.mark [] [] |> renderNode |> should equal "<mark></mark>"
-    Elem.q [] [] |> renderNode |> should equal "<q></q>"
-    Elem.rp [] [] |> renderNode |> should equal "<rp></rp>"
-    Elem.rt [] [] |> renderNode |> should equal "<rt></rt>"
-    Elem.ruby [] [] |> renderNode |> should equal "<ruby></ruby>"
-    Elem.s [] [] |> renderNode |> should equal "<s></s>"
-    Elem.samp [] [] |> renderNode |> should equal "<samp></samp>"
-    Elem.small [] [] |> renderNode |> should equal "<small></small>"
-    Elem.span [] [] |> renderNode |> should equal "<span></span>"
-    Elem.strong [] [] |> renderNode |> should equal "<strong></strong>"
-    Elem.sub [] [] |> renderNode |> should equal "<sub></sub>"
-    Elem.sup [] [] |> renderNode |> should equal "<sup></sup>"
-    Elem.time [] [] |> renderNode |> should equal "<time></time>"
-    Elem.u [] [] |> renderNode |> should equal "<u></u>"
-    Elem.var [] [] |> renderNode |> should equal "<var></var>"
-    Elem.wbr [] |> renderNode |> should equal "<wbr />"
-    Elem.area [] [] |> renderNode |> should equal "<area></area>"
-    Elem.audio [] [] |> renderNode |> should equal "<audio></audio>"
-    Elem.img [] |> renderNode |> should equal "<img />"
-    Elem.map [] [] |> renderNode |> should equal "<map></map>"
-    Elem.track [] |> renderNode |> should equal "<track />"
-    Elem.video [] [] |> renderNode |> should equal "<video></video>"
-    Elem.embed [] |> renderNode |> should equal "<embed />"
-    Elem.iframe [] [] |> renderNode |> should equal "<iframe></iframe>"
-    Elem.object [] [] |> renderNode |> should equal "<object></object>"
-    Elem.picture [] [] |> renderNode |> should equal "<picture></picture>"
-    Elem.portal [] [] |> renderNode |> should equal "<portal></portal>"
-    Elem.source [] |> renderNode |> should equal "<source />"
-    Elem.canvas [] [] |> renderNode |> should equal "<canvas></canvas>"
-    Elem.noscript [] [] |> renderNode |> should equal "<noscript></noscript>"
-    Elem.script [] [] |> renderNode |> should equal "<script></script>"
-    Elem.del [] [] |> renderNode |> should equal "<del></del>"
-    Elem.ins [] [] |> renderNode |> should equal "<ins></ins>"
-    Elem.caption [] [] |> renderNode |> should equal "<caption></caption>"
-    Elem.col [] |> renderNode |> should equal "<col />"
-    Elem.colgroup [] [] |> renderNode |> should equal "<colgroup></colgroup>"
-    Elem.table [] [] |> renderNode |> should equal "<table></table>"
-    Elem.tbody [] [] |> renderNode |> should equal "<tbody></tbody>"
-    Elem.td [] [] |> renderNode |> should equal "<td></td>"
-    Elem.tfoot [] [] |> renderNode |> should equal "<tfoot></tfoot>"
-    Elem.th [] [] |> renderNode |> should equal "<th></th>"
-    Elem.thead [] [] |> renderNode |> should equal "<thead></thead>"
-    Elem.tr [] [] |> renderNode |> should equal "<tr></tr>"
-    Elem.button [] [] |> renderNode |> should equal "<button></button>"
-    Elem.datalist [] [] |> renderNode |> should equal "<datalist></datalist>"
-    Elem.fieldset [] [] |> renderNode |> should equal "<fieldset></fieldset>"
-    Elem.form [] [] |> renderNode |> should equal "<form></form>"
-    Elem.input [] |> renderNode |> should equal "<input />"
-    Elem.label [] [] |> renderNode |> should equal "<label></label>"
-    Elem.legend [] [] |> renderNode |> should equal "<legend></legend>"
-    Elem.meter [] [] |> renderNode |> should equal "<meter></meter>"
-    Elem.optgroup [] [] |> renderNode |> should equal "<optgroup></optgroup>"
-    Elem.option [] [] |> renderNode |> should equal "<option></option>"
-    Elem.output [] [] |> renderNode |> should equal "<output></output>"
-    Elem.progress [] [] |> renderNode |> should equal "<progress></progress>"
-    Elem.select [] [] |> renderNode |> should equal "<select></select>"
-    Elem.textarea [] [] |> renderNode |> should equal "<textarea></textarea>"
-    Elem.details [] [] |> renderNode |> should equal "<details></details>"
-    Elem.dialog [] [] |> renderNode |> should equal "<dialog></dialog>"
-    Elem.summary [] [] |> renderNode |> should equal "<summary></summary>"
-    Elem.slot [] [] |> renderNode |> should equal "<slot></slot>"
-    Elem.template [] [] |> renderNode |> should equal "<template></template>"
-    Elem.math [] [] |> renderNode |> should equal "<math></math>"
-    Elem.svg [] [] |> renderNode |> should equal "<svg></svg>"
+    _html [] [] |> renderNode |> should equal "<html></html>"
+    _base [] |> renderNode |> should equal "<base />"
+    _head [] [] |> renderNode |> should equal "<head></head>"
+    _link [] |> renderNode |> should equal "<link />"
+    _meta [] |> renderNode |> should equal "<meta />"
+    _style [] [] |> renderNode |> should equal "<style></style>"
+    _title [] [] |> renderNode |> should equal "<title></title>"
+    _body [] [] |> renderNode |> should equal "<body></body>"
+    _address [] [] |> renderNode |> should equal "<address></address>"
+    _article [] [] |> renderNode |> should equal "<article></article>"
+    _aside [] [] |> renderNode |> should equal "<aside></aside>"
+    _footer [] [] |> renderNode |> should equal "<footer></footer>"
+    _header [] [] |> renderNode |> should equal "<header></header>"
+    _h1 [] [] |> renderNode |> should equal "<h1></h1>"
+    _h2 [] [] |> renderNode |> should equal "<h2></h2>"
+    _h3 [] [] |> renderNode |> should equal "<h3></h3>"
+    _h4 [] [] |> renderNode |> should equal "<h4></h4>"
+    _h5 [] [] |> renderNode |> should equal "<h5></h5>"
+    _h6 [] [] |> renderNode |> should equal "<h6></h6>"
+    _main [] [] |> renderNode |> should equal "<main></main>"
+    _nav [] [] |> renderNode |> should equal "<nav></nav>"
+    _section [] [] |> renderNode |> should equal "<section></section>"
+    _blockquote [] [] |> renderNode |> should equal "<blockquote></blockquote>"
+    _dd [] [] |> renderNode |> should equal "<dd></dd>"
+    _div [] [] |> renderNode |> should equal "<div></div>"
+    _dl [] [] |> renderNode |> should equal "<dl></dl>"
+    _dt [] [] |> renderNode |> should equal "<dt></dt>"
+    _figcaption [] [] |> renderNode |> should equal "<figcaption></figcaption>"
+    _figure [] [] |> renderNode |> should equal "<figure></figure>"
+    _hr [] |> renderNode |> should equal "<hr />"
+    _li [] [] |> renderNode |> should equal "<li></li>"
+    _menu [] [] |> renderNode |> should equal "<menu></menu>"
+    _ol [] [] |> renderNode |> should equal "<ol></ol>"
+    _p [] [] |> renderNode |> should equal "<p></p>"
+    _pre [] [] |> renderNode |> should equal "<pre></pre>"
+    _ul [] [] |> renderNode |> should equal "<ul></ul>"
+    _a [] [] |> renderNode |> should equal "<a></a>"
+    _abbr [] [] |> renderNode |> should equal "<abbr></abbr>"
+    _b [] [] |> renderNode |> should equal "<b></b>"
+    _bdi [] [] |> renderNode |> should equal "<bdi></bdi>"
+    _bdo [] [] |> renderNode |> should equal "<bdo></bdo>"
+    _br [] |> renderNode |> should equal "<br />"
+    _cite [] [] |> renderNode |> should equal "<cite></cite>"
+    _code [] [] |> renderNode |> should equal "<code></code>"
+    _data [] [] |> renderNode |> should equal "<data></data>"
+    _dfn [] [] |> renderNode |> should equal "<dfn></dfn>"
+    _em [] [] |> renderNode |> should equal "<em></em>"
+    _i [] [] |> renderNode |> should equal "<i></i>"
+    _kbd [] [] |> renderNode |> should equal "<kbd></kbd>"
+    _mark [] [] |> renderNode |> should equal "<mark></mark>"
+    _q [] [] |> renderNode |> should equal "<q></q>"
+    _rp [] [] |> renderNode |> should equal "<rp></rp>"
+    _rt [] [] |> renderNode |> should equal "<rt></rt>"
+    _ruby [] [] |> renderNode |> should equal "<ruby></ruby>"
+    _s [] [] |> renderNode |> should equal "<s></s>"
+    _samp [] [] |> renderNode |> should equal "<samp></samp>"
+    _small [] [] |> renderNode |> should equal "<small></small>"
+    _span [] [] |> renderNode |> should equal "<span></span>"
+    _strong [] [] |> renderNode |> should equal "<strong></strong>"
+    _sub [] [] |> renderNode |> should equal "<sub></sub>"
+    _sup [] [] |> renderNode |> should equal "<sup></sup>"
+    _time [] [] |> renderNode |> should equal "<time></time>"
+    _u [] [] |> renderNode |> should equal "<u></u>"
+    _var [] [] |> renderNode |> should equal "<var></var>"
+    _wbr [] |> renderNode |> should equal "<wbr />"
+    _area [] [] |> renderNode |> should equal "<area></area>"
+    _audio [] [] |> renderNode |> should equal "<audio></audio>"
+    _img [] |> renderNode |> should equal "<img />"
+    _map [] [] |> renderNode |> should equal "<map></map>"
+    _track [] |> renderNode |> should equal "<track />"
+    _video [] [] |> renderNode |> should equal "<video></video>"
+    _embed [] |> renderNode |> should equal "<embed />"
+    _iframe [] [] |> renderNode |> should equal "<iframe></iframe>"
+    _object [] [] |> renderNode |> should equal "<object></object>"
+    _picture [] [] |> renderNode |> should equal "<picture></picture>"
+    _portal [] [] |> renderNode |> should equal "<portal></portal>"
+    _source [] |> renderNode |> should equal "<source />"
+    _canvas [] [] |> renderNode |> should equal "<canvas></canvas>"
+    _noscript [] [] |> renderNode |> should equal "<noscript></noscript>"
+    _script [] [] |> renderNode |> should equal "<script></script>"
+    _del [] [] |> renderNode |> should equal "<del></del>"
+    _ins [] [] |> renderNode |> should equal "<ins></ins>"
+    _caption [] [] |> renderNode |> should equal "<caption></caption>"
+    _col [] |> renderNode |> should equal "<col />"
+    _colgroup [] [] |> renderNode |> should equal "<colgroup></colgroup>"
+    _table [] [] |> renderNode |> should equal "<table></table>"
+    _tbody [] [] |> renderNode |> should equal "<tbody></tbody>"
+    _td [] [] |> renderNode |> should equal "<td></td>"
+    _tfoot [] [] |> renderNode |> should equal "<tfoot></tfoot>"
+    _th [] [] |> renderNode |> should equal "<th></th>"
+    _thead [] [] |> renderNode |> should equal "<thead></thead>"
+    _tr [] [] |> renderNode |> should equal "<tr></tr>"
+    _button [] [] |> renderNode |> should equal "<button></button>"
+    _datalist [] [] |> renderNode |> should equal "<datalist></datalist>"
+    _fieldset [] [] |> renderNode |> should equal "<fieldset></fieldset>"
+    _form [] [] |> renderNode |> should equal "<form></form>"
+    _input [] |> renderNode |> should equal "<input />"
+    _label [] [] |> renderNode |> should equal "<label></label>"
+    _legend [] [] |> renderNode |> should equal "<legend></legend>"
+    _meter [] [] |> renderNode |> should equal "<meter></meter>"
+    _optgroup [] [] |> renderNode |> should equal "<optgroup></optgroup>"
+    _option [] [] |> renderNode |> should equal "<option></option>"
+    _output [] [] |> renderNode |> should equal "<output></output>"
+    _progress [] [] |> renderNode |> should equal "<progress></progress>"
+    _select [] [] |> renderNode |> should equal "<select></select>"
+    _textarea [] [] |> renderNode |> should equal "<textarea></textarea>"
+    _details [] [] |> renderNode |> should equal "<details></details>"
+    _dialog [] [] |> renderNode |> should equal "<dialog></dialog>"
+    _summary [] [] |> renderNode |> should equal "<summary></summary>"
+    _slot [] [] |> renderNode |> should equal "<slot></slot>"
+    _template [] [] |> renderNode |> should equal "<template></template>"
+    _math [] [] |> renderNode |> should equal "<math></math>"
+    _svg [] [] |> renderNode |> should equal "<svg></svg>"

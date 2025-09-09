@@ -16,9 +16,10 @@ type XmlElement =
 
 /// Describes the different XML-style node patterns
 type XmlNode =
-    | ParentNode      of XmlElement * XmlNode list
-    | SelfClosingNode of XmlElement
     | TextNode        of string
+    | SelfClosingNode of XmlElement
+    | NodeList        of XmlNode list
+    | ParentNode      of XmlElement * XmlNode list
 
 [<AbstractClass; Sealed>]
 type StringBuilderCache internal() =
@@ -80,18 +81,25 @@ module internal XmlNodeSerializer =
                     w.Write attrValue
                     w.Write _quote
 
+        let inline writeElement (tag : string, attrs) =
+            w.Write _openChar
+            w.Write tag
+            writeAttributes attrs
+            w.Write _space
+            w.Write _term
+            w.Write _closeChar
+
         let rec buildXml tag =
             match tag with
             | TextNode text ->
                 w.Write text
 
-            | SelfClosingNode (tag, attrs) ->
-                w.Write _openChar
-                w.Write tag
-                writeAttributes attrs
-                w.Write _space
-                w.Write _term
-                w.Write _closeChar
+            | SelfClosingNode el ->
+                writeElement el
+
+            | NodeList nodes ->
+                for node in nodes do
+                    buildXml node
 
             | ParentNode ((tag, attrs), children) ->
                 w.Write _openChar

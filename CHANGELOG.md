@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.3.0] 2025-09-09
+
+### Added
+
+- `XmlNode.NodeList` to represent HTML fragments.
+- `Elem.createFragment` to create HTML fragments from a list of `XmlNode`.
+- `Elem.empty` leverages `Elem.createFragment` and `XmlNode.NodeList` to represent an empty HTML fragment.
+
 ## [1.2.0] 2025-06-26
 
 ### Added

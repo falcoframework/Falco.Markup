@@ -6,7 +6,6 @@ open Xunit
 
 [<Fact>]
 let ``Elements`` () =
-
     _html [] [] |> should equal <| Elem.html [] []
     _base [] |> should equal <| Elem.base' []
     _head [] [] |> should equal <| Elem.head [] []

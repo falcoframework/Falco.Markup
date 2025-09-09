@@ -25,6 +25,17 @@ module TestHelpersTests =
         nameValues |> should equal "name=falco"
 
     [<Fact>]
+    let ``List of form inputs should return multiple name/value pair`` () =
+        let xml = NodeList [
+            Elem.input [ Attr.name "name"; Attr.value "falco" ]
+            Elem.input [ Attr.name "version"; Attr.value "5"; Attr.typeNumber ] ]
+
+        let nameValues = renderNameValues xml
+
+        nameValues |> should equal "name=falco&version=5"
+
+
+    [<Fact>]
     let ``Nested form input should return one name/value pair`` () =
         let xml = Elem.form [] [
             Elem.section [] [
@@ -49,11 +60,11 @@ module TestHelpersTests =
     let ``Multiple form inputs should return name/value pairs`` () =
         let xml = Elem.form [] [
             Elem.input [ Attr.name "name"; Attr.value "falco" ]
-            Elem.input [ Attr.name "age"; Attr.value "3"; Attr.typeNumber ] ]
+            Elem.input [ Attr.name "version"; Attr.value "5"; Attr.typeNumber ] ]
 
         let nameValues = renderNameValues xml
 
-        nameValues |> should equal "name=falco&age=3"
+        nameValues |> should equal "name=falco&version=5"
 
     [<Fact>]
     let ``Single textarea should return one name/value pair`` () =
@@ -70,11 +81,11 @@ module TestHelpersTests =
             Elem.input [ Attr.name "name"; Attr.value "falco" ]
             Elem.input [ Attr.value "bad" ]
             Elem.textarea [] [ Text.raw "bad" ]
-            Elem.input [ Attr.name "age"; Attr.value "3"; Attr.typeNumber ] ]
+            Elem.input [ Attr.name "version"; Attr.value "5"; Attr.typeNumber ] ]
 
         let nameValues = renderNameValues xml
 
-        nameValues |> should equal "name=falco&age=3"
+        nameValues |> should equal "name=falco&version=5"
 
     [<Theory>]
     [<InlineData("radio")>]
