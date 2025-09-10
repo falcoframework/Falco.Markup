@@ -3,6 +3,10 @@ name: build
 on:
   push:
     branches: [master]
+    # exclude commits
+    paths-ignore:
+      - 'README.md'
+
   pull_request:
 
 jobs:

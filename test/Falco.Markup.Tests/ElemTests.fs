@@ -62,8 +62,7 @@ let ``Should produce valid html doc`` () =
     renderHtml doc |> should equal """<!DOCTYPE html><html><body><div class="my-class"><h1>hello</h1></div></body></html>"""
 
 [<Fact>]
-let ``Should produce valid template fragment from XmlNode and id``()
-    =
+let ``Should produce valid template fragment from XmlNode and id``() =
     let doc =
         _div [ _id_ "my-div"; _class_ "my-class" ] [
             _h1 [ _id_ "my-heading" ] [ _text "hello" ] ]

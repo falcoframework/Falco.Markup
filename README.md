@@ -337,10 +337,22 @@ let xmlDoc =
 let xml = renderXml xmlDoc
 ```
 
-## HTML Fragments
+## Template Fragments
 
-Sometimes you may want to create a fragment of HTML, without the surrounding `<html>`, `<head>` and `<body>` tags. Or, any wrapper element for that matter.
+There are circumstances where you may want to render only a portion of your view. Especially common in [hypermedia driven](https://htmx.org/essays/hypermedia-driven-applications/) applications. Supporting [template fragments](https://htmx.org/essays/template-fragments/) is helpful in maintaining locality of behaviour, because it allows you to decompose a particular view for partial updates internally without pulling fragments of the template out to separate files for rendering, creating a large number of individual templates.
 
+Falco.Markup supports this pattern by way of the `renderFragment` function, which will traverse the provided `XmlNode` tree and render only the child node matching the provided `id`. Otherwise, gracefully returning an empty string if no match is found.
+
+```fsharp
+open Falco.Markup
+
+let view =
+    _div [ _id_ "my-div"; _class_ "my-class" ] [
+        _h1 [ _id_ "my-heading" ] [ _text "hello" ] ]
+
+let render = renderFragment doc "my-heading"
+// produces: <h1 id="my-heading">hello</h1>
+```
 
 ## SVG
 
