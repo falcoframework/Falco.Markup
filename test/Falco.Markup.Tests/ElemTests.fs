@@ -12,33 +12,45 @@ let ``Self-closing tag should render with trailing slash`` () =
 [<Fact>]
 let ``Self-closing tag with attrs should render with trailing slash`` () =
     let t = Elem.createSelfClosing "hr" [ _class_ "my-class" ]
-    renderNode t |> should equal "<hr class=\"my-class\" />"
+    renderNode t |> should equal """<hr class="my-class" />"""
 
 [<Fact>]
 let ``Standard tag should render with multiple attributes`` () =
     let t = Elem.create "div" [ Attr.create "class" "my-class"; _autofocus_; Attr.create "data-bind" "slider" ] []
-    renderNode t |> should equal "<div class=\"my-class\" autofocus data-bind=\"slider\"></div>"
-
-
-[<Fact>]
-let ``Can render NodeList with items``() =
-    Elem.createFragment [
-        for i = 1 to 3 do
-            yield _div [] [ _textf "%i" i ]
-    ]
-    |> renderNode
-    |> should equal "<div>1</div><div>2</div><div>3</div>"
-
-[<Fact>]
-let ``Can render empty NodeList``() =
-    Elem.empty
-    |> renderNode
-    |> should equal ""
+    renderNode t |> should equal """<div class="my-class" autofocus data-bind="slider"></div>"""
 
 [<Fact>]
 let ``Script should contain src, lang and async`` () =
     let t = _script [ _src_ "http://example.org/example.js";  _lang_ "javascript"; _async_ ] []
-    renderNode t |> should equal "<script src=\"http://example.org/example.js\" lang=\"javascript\" async></script>"
+    renderNode t |> should equal """<script src="http://example.org/example.js" lang="javascript" async></script>"""
+
+[<Fact>]
+let ``Should render text node with special characters`` () =
+    let doc = _div [] [ _text "5 < 10 & 10 > 5 \"quoted\"" ]
+    renderNode doc |> should equal """<div>5 < 10 & 10 > 5 "quoted"</div>"""
+
+[<Fact>]
+let ``Should render attribute with empty value`` () =
+    let doc = _input [ Attr.create "value" "" ]
+    renderNode doc |> should equal """<input value="" />"""
+
+[<Fact>]
+let ``Should render deeply nested elements`` () =
+    let rec nest n acc =
+        if n = 0 then acc
+        else nest (n - 1) (_div [] [ acc ])
+    let doc = nest 10 (_span [] [ _text "deep" ])
+    renderNode doc |> should equal "<div><div><div><div><div><div><div><div><div><div><span>deep</span></div></div></div></div></div></div></div></div></div></div>"
+
+[<Fact>]
+let ``Should render mixed content (text and child elements)`` () =
+    let doc = _div [] [ _text "Hello "; _span [] [ _text "world" ]; _text "!" ]
+    renderNode doc |> should equal """<div>Hello <span>world</span>!</div>"""
+
+[<Fact>]
+let ``Should render unicode characters in text and attributes`` () =
+    let doc = _div [ _title_ "Привет мир" ] [ _text "こんにちは世界" ]
+    renderNode doc |> should equal """<div title="Привет мир">こんにちは世界</div>"""
 
 [<Fact>]
 let ``Should produce valid html doc`` () =
@@ -47,7 +59,41 @@ let ``Should produce valid html doc`` () =
             _body [] [
                 _div [ _class_ "my-class" ] [
                     _h1 [] [ _text "hello" ] ] ] ]
-    renderHtml doc |> should equal "<!DOCTYPE html><html><body><div class=\"my-class\"><h1>hello</h1></div></body></html>"
+    renderHtml doc |> should equal """<!DOCTYPE html><html><body><div class="my-class"><h1>hello</h1></div></body></html>"""
+
+[<Fact>]
+let ``Should produce valid template fragment from XmlNode and id``()
+    =
+    let doc =
+        _div [ _id_ "my-div"; _class_ "my-class" ] [
+            _h1 [ _id_ "my-heading" ] [ _text "hello" ] ]
+
+    renderFragment doc "my-heading" |> should equal """<h1 id="my-heading">hello</h1>"""
+
+[<Fact>]
+let ``Should produce empty string template fragment from XmlNode and invalid/missing id``()
+    =
+    let doc =
+        _div [ _id_ "my-div"; _class_ "my-class" ] [
+            _h1 [ _id_ "my-heading" ] [ _text "hello" ] ]
+
+    renderFragment doc "not-found" |> should equal """"""
+
+[<Fact>]
+let ``Should produce self-closing tag fragment from XmlNode and id`` () =
+    let doc =
+        _div [] [
+            _img [ _id_ "img-1"; _src_ "foo.png" ]
+        ]
+    renderFragment doc "img-1" |> should equal """<img id="img-1" src="foo.png" />"""
+
+[<Fact>]
+let ``Should produce fragment when id is on root node`` () =
+    let doc =
+        _div [ _id_ "root" ] [
+            _span [] [ _text "child" ]
+        ]
+    renderFragment doc "root" |> should equal """<div id="root"><span>child</span></div>"""
 
 [<Fact>]
 let ``_control should render label with nested input`` () =
@@ -63,8 +109,8 @@ let ``_control should render label with nested input`` () =
 
 [<Fact>]
 let ``Should create valid html button`` () =
-    let doc = _button [ _onclick_ "console.log(\"test\")"] [ _text "click me" ]
-    renderNode doc |> should equal "<button onclick=\"console.log(\"test\")\">click me</button>";
+    let doc = _button [ _onclick_ """console.log("test")""" ] [ _text "click me" ]
+    renderNode doc |> should equal """<button onclick="console.log("test")">click me</button>""";
 
 [<Fact>]
 let ``Should produce valid xml doc`` () =
@@ -75,7 +121,7 @@ let ``Should produce valid xml doc`` () =
             ]
         ]
 
-    renderXml doc |> should equal "<?xml version=\"1.0\" encoding=\"UTF-8\"?><books><book><name>To Kill A Mockingbird</name></book></books>"
+    renderXml doc |> should equal """<?xml version="1.0" encoding="UTF-8"?><books><book><name>To Kill A Mockingbird</name></book></books>"""
 
 type Product =
     { Name : string

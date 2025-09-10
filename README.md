@@ -31,6 +31,7 @@ renderHtml doc
 - Should be simple, extensible and integrate with existing .NET libraries.
 - Can be easily learned.
 - Match HTML [spec](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference) as closely as possible.
+- Support rendering full documents as well as fragments.
 
 ## Overview
 
@@ -47,7 +48,7 @@ Each of the primary modules can be access using the name directly, or using the 
 | `Elem` | `_h1 [] []` |
 | `Attr` | `_class_ "my-class"` |
 | `Text` | `_text "Hello world!"` |
-| `Text` shortcuts | `_h1' "Hello world"` |
+| `Text` shortcuts | `_h1' "Hello world"` (note the trailing apostrophe) |
 
 
 ```fsharp
@@ -335,6 +336,11 @@ let xmlDoc =
 
 let xml = renderXml xmlDoc
 ```
+
+## HTML Fragments
+
+Sometimes you may want to create a fragment of HTML, without the surrounding `<html>`, `<head>` and `<body>` tags. Or, any wrapper element for that matter.
+
 
 ## SVG
 

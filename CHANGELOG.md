@@ -2,13 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.0] 2025-09-16
+
+### Added
+
+- `XmlNodeRenderer.renderFragment` to render template fragments based on `id` attribute lookup.
+
+### Fixed
+
+- Removed `XmlNode.NodeList`, `Elem.createFragment`, and `Elem.empty` to restore functionality, from 1.2.0 and correctly provide template fragment support.
+
 ## [1.3.0] 2025-09-09
 
 ### Added
 
-- `XmlNode.NodeList` to represent HTML fragments.
-- `Elem.createFragment` to create HTML fragments from a list of `XmlNode`.
-- `Elem.empty` leverages `Elem.createFragment` and `XmlNode.NodeList` to represent an empty HTML fragment.
+- (Reverted in 1.4.0) `XmlNode.NodeList` to represent [template fragments](https://htmx.org/essays/template-fragments/).
+- (Reverted in 1.4.0) `Elem.createFragment` to create template fragments from a list of `XmlNode`.
+- (Reverted in 1.4.0) `Elem.empty` leverages `Elem.createFragment` and `XmlNode.NodeList` to represent an empty template fragment.
 
 ## [1.2.0] 2025-06-26
 
@@ -27,7 +37,6 @@ All notable changes to this project will be documented in this file.
           ]
       ```
 - Unified DSL module ensures backward compatibility while providing a cleaner syntax for new code.
-
 
 ## [1.1.1] 2024-03-28
 

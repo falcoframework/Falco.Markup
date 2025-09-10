@@ -2,7 +2,6 @@ module Falco.Tests.Text
 
 open System
 open Falco.Markup
-open Falco.Markup.Svg
 open FsUnit.Xunit
 open Xunit
 

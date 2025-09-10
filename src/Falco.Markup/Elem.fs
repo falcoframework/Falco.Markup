@@ -9,12 +9,6 @@ module Elem =
     let createSelfClosing (tag : string) (attr : XmlAttribute list) =
         SelfClosingNode (tag, attr)
 
-    let createFragment (nodes : XmlNode list) =
-        NodeList nodes
-
-    let empty =
-        NodeList []
-
     //
     // Main root
 

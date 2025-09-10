@@ -18,7 +18,6 @@ type XmlElement =
 type XmlNode =
     | TextNode        of string
     | SelfClosingNode of XmlElement
-    | NodeList        of XmlNode list
     | ParentNode      of XmlElement * XmlNode list
 
 [<AbstractClass; Sealed>]
@@ -64,7 +63,7 @@ module internal XmlNodeSerializer =
     let [<Literal>] _equals = '='
     let [<Literal>] _quote = '"'
 
-    let serialize (w : StringWriter, xml : XmlNode) =
+    let serialize (w : TextWriter, xml : XmlNode) =
         let writeAttributes attrs =
             for attr in (attrs : XmlAttribute list) do
                 if attrs.Length > 0 then
@@ -81,25 +80,18 @@ module internal XmlNodeSerializer =
                     w.Write attrValue
                     w.Write _quote
 
-        let inline writeElement (tag : string, attrs) =
-            w.Write _openChar
-            w.Write tag
-            writeAttributes attrs
-            w.Write _space
-            w.Write _term
-            w.Write _closeChar
-
         let rec buildXml tag =
             match tag with
             | TextNode text ->
                 w.Write text
 
-            | SelfClosingNode el ->
-                writeElement el
-
-            | NodeList nodes ->
-                for node in nodes do
-                    buildXml node
+            | SelfClosingNode (tag, attrs) ->
+                w.Write _openChar
+                w.Write tag
+                writeAttributes attrs
+                w.Write _space
+                w.Write _term
+                w.Write _closeChar
 
             | ParentNode ((tag, attrs), children) ->
                 w.Write _openChar
@@ -117,26 +109,52 @@ module internal XmlNodeSerializer =
 
         buildXml xml
 
-        StringBuilderCache.GetString(w.GetStringBuilder())
-
 [<AutoOpen>]
 module XmlNodeRenderer =
-    /// Render XmlNode as string
-    let renderNode (tag : XmlNode) =
+    let private render (tag : XmlNode) (header : string option) =
         let sb = StringBuilderCache.Acquire()
         let w = new StringWriter(sb, CultureInfo.InvariantCulture)
+        match header with
+        | Some x -> w.Write x
+        | None   -> ()
         XmlNodeSerializer.serialize(w, tag)
+        StringBuilderCache.GetString(w.GetStringBuilder())
+
+    /// Render XmlNode as string
+    let renderNode (tag : XmlNode) =
+        render tag None
 
     /// Render XmlNode as HTML string
     let renderHtml (tag : XmlNode) =
-        let sb = StringBuilderCache.Acquire()
-        let w = new StringWriter(sb, CultureInfo.InvariantCulture)
-        w.Write "<!DOCTYPE html>"
-        XmlNodeSerializer.serialize(w, tag)
+        render tag (Some "<!DOCTYPE html>")
 
     /// Render XmlNode as XML string
     let renderXml (tag : XmlNode) =
-        let sb = StringBuilderCache.Acquire()
-        let w = new StringWriter(sb, CultureInfo.InvariantCulture)
-        w.Write "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-        XmlNodeSerializer.serialize(w, tag)
+        render tag (Some "<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
+
+    /// Render a fragment of XmlNode by id as string
+    let renderFragment (tag : XmlNode) (id : string) =
+        let isIdMatch attr =
+            match attr with
+            | KeyValueAttr ("id", v) when v = id -> true
+            | _ -> false
+
+        let rec findId tag =
+            match tag with
+            | TextNode _ ->
+                None
+
+            | SelfClosingNode ((_, attrs)) ->
+                attrs
+                |> List.tryFind isIdMatch
+                |> Option.map (fun _ -> tag)
+
+            | ParentNode ((_, attrs), children) ->
+                attrs
+                |> List.tryFind isIdMatch
+                |> Option.map (fun _ -> tag)
+                |> Option.orElse (children |> List.tryPick findId)
+
+        match findId tag with
+        | Some node -> render node None
+        | None      -> String.Empty

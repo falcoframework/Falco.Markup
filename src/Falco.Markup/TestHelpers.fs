@@ -121,7 +121,6 @@ module TestHelpers =
 
                                     | ParentNode _
                                     | SelfClosingNode _
-                                    | NodeList _
                                     | TextNode _ -> ()
 
                             // <option></option>
@@ -130,7 +129,6 @@ module TestHelpers =
 
                             | ParentNode _
                             | SelfClosingNode _
-                            | NodeList _
                             | TextNode _ -> () ]
 
                     if selected.Length = 0 then
@@ -143,9 +141,6 @@ module TestHelpers =
                     for c in children do
                         buildNameValues c
 
-                | NodeList nodes ->
-                    for node in nodes do
-                        buildNameValues node
                 | SelfClosingNode _
                 | TextNode _ -> ()
 
