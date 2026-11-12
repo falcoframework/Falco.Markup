@@ -1,7 +1,6 @@
 namespace Falco.Markup
 
 open System
-open System.Globalization
 open System.IO
 open Falco.Markup.XmlNodeSerializer
 
@@ -146,7 +145,7 @@ module TestHelpers =
 
             buildNameValues xml
 
-            let nameValues = StringBuilderCache.GetString(w.GetStringBuilder())
+            let nameValues = StringWriterCache.GetString w
 
             if nameValues.Length > 0 && nameValues[nameValues.Length - 1] = '&' then
                 nameValues.Substring(0, nameValues.Length - 1)
@@ -156,6 +155,5 @@ module TestHelpers =
     /// Render XmlNode recursively to name/value representation, useful for
     /// testing Falco query and form mappings
     let renderNameValues (tag : XmlNode) =
-        let sb = StringBuilderCache.Acquire()
-        let w = new StringWriter(sb, CultureInfo.InvariantCulture)
+        let w = StringWriterCache.Acquire()
         XmlNodeSerializer.serializeNameValues(w, tag)

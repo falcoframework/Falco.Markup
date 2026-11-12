@@ -3,6 +3,7 @@ module Falco.Tests.Elem
 open Falco.Markup
 open FsUnit.Xunit
 open Xunit
+open System.IO
 
 [<Fact>]
 let ``Self-closing tag should render with trailing slash`` () =
@@ -121,6 +122,39 @@ let ``Should produce valid xml doc`` () =
         ]
 
     renderXml doc |> should equal """<?xml version="1.0" encoding="UTF-8"?><books><book><name>To Kill A Mockingbird</name></book></books>"""
+
+[<Fact>]
+let ``String and writer renderers produce identical output`` () =
+    let nodes = [
+        Text.raw null
+        Elem.create null [ Attr.create null null ] [ Elem.createSelfClosing null [] ]
+        Elem.create "div" [ Attr.create "title" "こんにちは"; Attr.createBool "hidden" ] [
+            Text.raw "A & B"
+            Elem.createSelfClosing "img" [ Attr.create "src" ""; Attr.createBool "hidden" ]
+            Elem.create "span" [] []
+        ]
+    ]
+
+    let renderers = [
+        renderNode, renderNodeTo
+        renderHtml, renderHtmlTo
+        renderXml, renderXmlTo
+    ]
+
+    for node in nodes do
+        for renderString, renderWriter in renderers do
+            use writer = new StringWriter()
+            renderWriter writer node
+            writer.ToString() |> should equal (renderString node)
+
+[<Fact>]
+let ``HTML5 template preserves default and custom content`` () =
+    let head = [ Elem.title [] [ Text.raw "Title" ] ]
+    let body = [ Elem.p [] [ Text.raw "Body" ] ]
+
+    Templates.html5 "fr" head body
+    |> renderHtml
+    |> should equal """<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Title</title></head><body><p>Body</p></body></html>"""
 
 type Product =
     { Name : string

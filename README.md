@@ -381,6 +381,10 @@ let svg = renderNode svgDrawing
 
 ## Performance
 
+`XmlNode` values are immutable, so static nodes and subtrees can be constructed once and reused.
+Likewise, values that do not change between requests can be formatted once rather than with
+`Text.rawf` on every render. Keep request-specific and culture-sensitive values dynamic.
+
 You'll find the result of a simple [benchmark](benchmarks/) below, where Falco.Markup is compared to native `StringBuilder` usage as well as some other markup libraries.
 
 ```shell

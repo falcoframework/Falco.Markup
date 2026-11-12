@@ -13,6 +13,15 @@ let ``No form values should return empty string`` () =
     nameValues |> should equal String.Empty
 
 [<Fact>]
+let ``Form and markup rendering do not retain each other's output`` () =
+    let form = Elem.form [] [ Elem.input [ Attr.name "name"; Attr.value "falco" ] ]
+    renderNode (Text.raw "previous markup") |> should equal "previous markup"
+    TestHelpers.renderNameValues form |> should equal "name=falco"
+    renderHtml (Elem.div [] []) |> should equal "<!DOCTYPE html><div></div>"
+    TestHelpers.renderNameValues (Elem.div [] []) |> should equal String.Empty
+    TestHelpers.renderNameValues form |> should equal "name=falco"
+
+[<Fact>]
 let ``Single form input should return one name/value pair`` () =
     let xml = Elem.form [] [
         Elem.input [ Attr.name "name"; Attr.value "falco" ] ]

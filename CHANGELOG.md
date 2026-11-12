@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.4.1] 2026-11-12
+
+### Added
+
+- `XmlNodeRenderer.renderNodeTo`, `renderHtmlTo` and `renderXmlTo` to render synchronously to a `TextWriter` without an intermediate string. Do not write directly to response streams that disallow synchronous I/O.
+
+### Changed
+
+- Improved string rendering performance with a specialized `StringBuilder` serializer. Writers are cached per thread up to a builder capacity of 65,536 characters.
+- Reused the constant metadata nodes in `Templates.html5` to reduce template construction allocations.
+
+### Fixed
+
+- Attribute serialization was O(n²) per element because `List.Length` was evaluated for every attribute; it is now linear.
+
+### Removed
+
+- The public `StringBuilderCache` type. `TestHelpers` now shares the internal `StringWriterCache` used by rendering. This is a breaking change for code using `StringBuilderCache` directly.
+
 ## [1.4.0] 2025-09-16
 
 ### Added
