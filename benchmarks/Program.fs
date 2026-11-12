@@ -42,6 +42,19 @@ module Markup =
         |> List.map elem
         |> ul [ _id "products "]
 
+    module OxpeckerView =
+        open Oxpecker.ViewEngine
+
+        let template (products: Product list) =
+            ul(id = "products") {
+                for product in products do
+                    li() {
+                        h2() { product.Name }
+                        sprintf "Only %f" product.Price
+                        product.Description
+                    }
+            }
+
     let scribanTemplate =
         "<ul id='products'>
             {{ for product in products; with product }}
@@ -83,6 +96,12 @@ module Markup =
             products
             |> giraffeTemplate
             |> RenderView.AsString.htmlNode
+
+        [<Benchmark>]
+        member _.Oxpecker() =
+            products
+            |> OxpeckerView.template
+            |> Oxpecker.ViewEngine.Render.toString
 
         [<Benchmark>]
         member _.Scriban() =
